@@ -1,12 +1,12 @@
 import evaluate
 import torch
 import numpy as np
-from torch import nn
 import os
 import pandas as pd
+from datasets import Dataset, DatasetDict
+from torch import nn
 from transformers import AutoTokenizer, DataCollatorWithPadding, AutoModelForSequenceClassification, TrainingArguments, \
     Trainer
-from datasets import Dataset, DatasetDict
 
 accuracy = evaluate.load("accuracy")
 tokenizer = AutoTokenizer.from_pretrained("microsoft/deberta-v3-base")
@@ -25,7 +25,7 @@ label2id = {y: x for x, y in id2label.items()}
 
 print(label2id)
 
-csv_file = 'data_tables/LTL_Y_ISI.csv'
+csv_file = 'LTL_Y_ISI.csv'
 df = pd.read_csv(csv_file)
 
 text, label = [[], []], [[], []]
