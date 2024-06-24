@@ -2,14 +2,19 @@ import evaluate
 import torch
 from torch import nn
 import os
-accuracy = evaluate.load("accuracy")
-
+import csv
+import pandas as pd
+import numpy as np
+from datasets import Dataset, DatasetDict
 from transformers import AutoTokenizer
+from transformers import DataCollatorWithPadding
+from transformers import AutoModelForSequenceClassification, TrainingArguments, Trainer
+from transformers import AutoTokenizer
+
 tokenizer = AutoTokenizer.from_pretrained("microsoft/deberta-v3-base")
 
-import csv
+accuracy = evaluate.load("accuracy")
 
-import os
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
 with open('I-S-I.csv', 'r', encoding='utf-8') as file:
@@ -28,7 +33,7 @@ label2id={"Default Inference":0,"Default Rephrase":1,"Default Conflict":2}
 #    }
 #    before_table.append(before_row)
 
-import pandas as pd
+
 
 thedf = pd.read_csv("original-TA-YA-S.csv")
 
@@ -74,8 +79,6 @@ for index, row in df.iterrows():
         text2.append(row['I1'] + " -> " + row['I2'])
         label2.append(row['label'])
 
-from datasets import Dataset, DatasetDict
-
 
 dataset1 = Dataset.from_dict({"label":label1 ,"text": text1 })
 dataset2 = Dataset.from_dict({"label":label2 ,"text": text2 })
@@ -88,18 +91,14 @@ dataset_dict["train"] = dataset1
 dataset_dict["test"] = dataset2
 notuse_dataset_dict["try"]=dataset3
 
-from transformers import AutoTokenizer
+
 
 tokenizer = AutoTokenizer.from_pretrained("microsoft/deberta-v3-base")
 def preprocess_function(examples):
     return tokenizer(examples["text"], truncation=True)
 tokenized = dataset_dict.map(preprocess_function, batched=True)
 
-from transformers import DataCollatorWithPadding
-
 data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
-
-import numpy as np
 
 
 def compute_metrics(eval_pred):
@@ -107,7 +106,7 @@ def compute_metrics(eval_pred):
     predictions = np.argmax(predictions, axis=1)
     return accuracy.compute(predictions=predictions, references=labels)
 
-from transformers import AutoModelForSequenceClassification, TrainingArguments, Trainer
+
 
 model = AutoModelForSequenceClassification.from_pretrained(
     "microsoft/deberta-v3-base", num_labels=3, id2label=id2label, label2id=label2id
