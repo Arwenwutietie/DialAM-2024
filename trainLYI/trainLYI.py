@@ -1,17 +1,21 @@
 import evaluate
 import torch
-from torch import nn
 import os
+import csv
+import os
+import pandas as pd
+import numpy as np
+from torch import nn
+from transformers import AutoTokenizer
+from datasets import Dataset, DatasetDict
+from transformers import AutoTokenizer
+from transformers import DataCollatorWithPadding
+from transformers import AutoModelForSequenceClassification, TrainingArguments, Trainer
+
 
 accuracy = evaluate.load("accuracy")
 
-from transformers import AutoTokenizer
-
 tokenizer = AutoTokenizer.from_pretrained("microsoft/deberta-v3-base")
-
-import csv
-
-import os
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
@@ -33,8 +37,6 @@ for row in csv_table:
         'label': (label2id[row['real']])
     }
     before_table.append(before_row)
-
-import pandas as pd
 
 df = pd.read_csv("new_table.csv")
 df = df.drop(['from', 'mid', 'last', 'predict'], axis=1)
@@ -80,8 +82,6 @@ for index, row in df.iterrows():
         text2.append('[CLS]' + prefix + '[SEP]' + row['L'] + '[SEP]' + row['I'])
         label2.append(row['label'])
 
-from datasets import Dataset, DatasetDict
-
 dataset1 = Dataset.from_dict({"label": label1, "text": text1})
 dataset2 = Dataset.from_dict({"label": label2, "text": text2})
 dataset3 = Dataset.from_dict({"label": label3, "text": text3})
@@ -93,7 +93,6 @@ dataset_dict["train"] = dataset1
 dataset_dict["test"] = dataset2
 notuse_dataset_dict["try"] = dataset3
 
-from transformers import AutoTokenizer
 
 tokenizer = AutoTokenizer.from_pretrained("microsoft/deberta-v3-base")
 
@@ -104,12 +103,8 @@ def preprocess_function(examples):
 
 tokenized = dataset_dict.map(preprocess_function, batched=True)
 
-from transformers import DataCollatorWithPadding
 
 data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
-
-import numpy as np
-
 
 def compute_metrics(eval_pred):
     predictions, labels = eval_pred
@@ -124,7 +119,6 @@ label2id = {"Asserting": 0, "Pure Questioning": 1, "Challenging": 2, "Assertive 
             "Rhetorical Questioning": 4, "Agreeing": 5, "Default Illocuting": 6, "Arguing": 7, "Restating": 8,
             "Disagreeing": 9}
 
-from transformers import AutoModelForSequenceClassification, TrainingArguments, Trainer
 
 model = AutoModelForSequenceClassification.from_pretrained(
     "microsoft/deberta-v3-base", num_labels=10, id2label=id2label, label2id=label2id
@@ -154,7 +148,7 @@ trainer = Trainer(
 
 # device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 # if torch.cuda.device_count() > 1:
-#   model = nn.DataParallel(model)  # 使用DataParallel模块进行多GPU并行
+#   model = nn.DataParallel(model)  
 # model.to(device)
 
 # model= torch.nn.DataParallel(model, device_ids=[0,1])
