@@ -1,14 +1,17 @@
 import os
 import json
 import pandas as pd
+import re
+import openai
+from tqdm import tqdm
+from openai import AzureOpenAI
 
-folder_path = "D:/Academic/HKUST/Courses/Year-2-Spring/UROP 1100/DialAM-2024/Data & Description/dataset"  # 文件夹路径
+folder_path = 'dataset'
 df = pd.DataFrame()
 pange = pd.DataFrame()
 
-# 遍历文件夹中的文件
 for filename in os.listdir(folder_path):
-    if filename.endswith(".json"):  # 仅处理 JSON 文件
+    if filename.endswith(".json"):  
         file_path = os.path.join(folder_path, filename)
         with open(file_path, "r") as file:
             data = json.load(file)
@@ -25,8 +28,6 @@ pange = pange.drop_duplicates().reset_index(drop=True)
 df['type'].drop_duplicates()
 for row in df["text"].head(50):
     print(row)
-
-import pandas as pd
 
 Snode_table = pd.DataFrame(columns=['from', 'mid', 'last', 'I1', 'I2', 'predict', 'real'])
 
@@ -54,10 +55,9 @@ Snode_table['real'] = df.set_index('nodeID').loc[bef_df['toID'].values]['text'].
 Snode_table['I1'] = df.set_index('nodeID').loc[bef_df['fromID'].values]['text'].values
 Snode_table['I2'] = df.set_index('nodeID').loc[aft_df['toID'].values]['text'].values
 
-# 重置索引
+ 
 Snode_table = Snode_table.reset_index(drop=True)
-
-# 打印结果
+ 
 Snode_table["real"].value_counts()
 
 def getNodeSet(t):
@@ -89,10 +89,10 @@ def getChain(f, m, t):
     new_table[f'm{m}'] = df.set_index('nodeID').loc[bef_df['toID'].values]['text'].values
     new_table[f't{t}'] = df.set_index('nodeID').loc[aft_df['toID'].values]['text'].values
 
-    # 重置索引
+     
     new_table = new_table.reset_index(drop=True)
 
-    # 打印结果
+     
     return new_table
 
 LTL_table = getChain('L', 'TA', 'L')
@@ -162,9 +162,6 @@ prompt_loc = {
         "five-shot-CoT": r"D:\Academic\HKUST\Courses\Year-2-Spring\UROP 1100\DialAM-2024\Codes\prompt\five-shot-CoT.txt",
     }
 
-import re
-import openai
-from openai import AzureOpenAI
 
 client = AzureOpenAI(
     api_key="bb2680df57634814964784a1f0836be9",
@@ -181,9 +178,6 @@ def categorical_clean(sentence):
             "Agreeing", "Assertive Questioning", "Arguing", "Restating", "Challenging", "Disagreeing"]
     regex = f"{'|'.join(categories)}"
     return re.search(regex, sentence).group() if re.search(regex, sentence) else 'NA'
-
-
-from tqdm import tqdm
 
 
 class GPT_QUERY:
