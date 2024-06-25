@@ -164,7 +164,7 @@ prompt_loc = {
 
 
 client = AzureOpenAI(
-    api_key="bb2680df57634814964784a1f0836be9",
+    api_key="  ",
     api_version="2023-05-15",
     azure_endpoint="https://hkust.azure-api.net"
 )
