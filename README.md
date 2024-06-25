@@ -22,7 +22,7 @@ pip install -r requirements.txt
 ```
 
 ## 3. Training
-Our code is divided into three seperate folders(trainISI, trainLYI, trainTYS) corresponding to the three subtasks in DialAM-2024.
+Our code is divided into three separated folders(trainISI, trainLYI, trainTYS) corresponding to the three subtasks in DialAM-2024(predicting S, Y_LI1+Y_LI_2, Y_TS).
 The default pretrained model is microsoft/deberta-v3-base. You can train the model with the pre-processed data provided in each folder.
 The gpt version of the code is also attached for your reference in an independent folder called gpt version.
 
