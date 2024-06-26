@@ -166,7 +166,7 @@ prompt_loc = {
 client = AzureOpenAI(
     api_key="  ",
     api_version="2023-05-15",
-    azure_endpoint="https://hkust.azure-api.net"
+    azure_endpoint=" "
 )
 
 def simple_clean(sentence):
