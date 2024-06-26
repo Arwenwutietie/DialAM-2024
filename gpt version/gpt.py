@@ -155,11 +155,11 @@ full_table = full_table.sample(frac=1)
 full_table
 
 prompt_loc = {
-        "prototype": r"D:\Academic\HKUST\Courses\Year-2-Spring\UROP 1100\DialAM-2024\Codes\prompt\prototype.txt",
-        "zero-shot": r"D:\Academic\HKUST\Courses\Year-2-Spring\UROP 1100\DialAM-2024\Codes\prompt\zero-shot.txt",
-        "one-shot": r"D:\Academic\HKUST\Courses\Year-2-Spring\UROP 1100\DialAM-2024\Codes\prompt\one-shot.txt",
-        "five-shot": r"D:\Academic\HKUST\Courses\Year-2-Spring\UROP 1100\DialAM-2024\Codes\prompt\five-shot.txt",
-        "five-shot-CoT": r"D:\Academic\HKUST\Courses\Year-2-Spring\UROP 1100\DialAM-2024\Codes\prompt\five-shot-CoT.txt",
+        "prototype": r"prompt\prototype.txt",
+        "zero-shot": r"prompt\zero-shot.txt",
+        "one-shot": r"prompt\one-shot.txt",
+        "five-shot": r"prompt\five-shot.txt",
+        "five-shot-CoT": r"prompt\five-shot-CoT.txt",
     }
 
 
